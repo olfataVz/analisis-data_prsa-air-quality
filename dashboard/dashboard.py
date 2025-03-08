@@ -416,18 +416,37 @@ st.pyplot(fig)
 
 #Perbandingan antar 2 stasiun dengan tingkat polutan terendah dan tertinggi
 st.title("Perbandingan Polutan Antar Stasiun")
-stasiun1 = st.selectbox("Pilih Stasiun 1", df_all["Station"].unique(), index=0)
-stasiun2 = st.selectbox("Pilih Stasiun 2", df_all["Station"].unique(), index=1)
+stasiun1 = st.selectbox("Pilih Stasiun 1", df_all["Station"].unique(), index=7)
+stasiun2 = st.selectbox("Pilih Stasiun 2", df_all["Station"].unique(), index=2)
 
 df_stasiun1 = df_all[df_all["Station"] == stasiun1].groupby("quarter")["PM2.5"].mean()
 df_stasiun2 = df_all[df_all["Station"] == stasiun2].groupby("quarter")["PM2.5"].mean()
 
 fig = go.Figure()
-fig.add_trace(go.Scatter(x=df_stasiun1.index.astype(str), y=df_stasiun1.values, mode='lines+markers', name=stasiun1))
-fig.add_trace(go.Scatter(x=df_stasiun2.index.astype(str), y=df_stasiun2.values, mode='lines+markers', name=stasiun2))
-fig.update_layout(title=f"Perbandingan PM2.5 antara {stasiun1} dan {stasiun2}", xaxis_title="Kuartal", yaxis_title="PM2.5")
-st.plotly_chart(fig)
 
+fig.add_trace(go.Scatter(
+    x=df_stasiun1.index.astype(str),
+    y=df_stasiun1.values,
+    mode='lines+markers',
+    name=stasiun1,
+    line=dict(color='red')  
+))
+
+fig.add_trace(go.Scatter(
+    x=df_stasiun2.index.astype(str),
+    y=df_stasiun2.values,
+    mode='lines+markers',
+    name=stasiun2,
+    line=dict(color='blue')  
+))
+
+fig.update_layout(
+    title=f"Perbandingan PM2.5 antara {stasiun1} dan {stasiun2}",
+    xaxis_title="Kuartal",
+    yaxis_title="PM2.5"
+)
+
+st.plotly_chart(fig)
 
 # Permasalahan 3: Penerapan teknik RFM (Recency, Frequency, Monetary) dalam analisis kualitas udara
 def create_rfm_airquality(df):
