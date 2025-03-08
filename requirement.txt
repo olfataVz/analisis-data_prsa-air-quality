@@ -1,7 +1,8 @@
+streamlit
 matplotlib
 numpy
 pandas
 seaborn
 plotly
 ipython
-streamlit
+pillow
