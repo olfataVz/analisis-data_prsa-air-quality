@@ -1,8 +1,6 @@
-streamlit
-matplotlib
-numpy
-pandas
-seaborn
-plotly
-ipython
-pillow
+matplotlib==3.4.3
+numpy==1.21.2
+pandas==1.3.2
+seaborn==0.11.2
+plotly==5.2.1
+ipython==7.26.0
