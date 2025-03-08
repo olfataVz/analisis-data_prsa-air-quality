@@ -1,10 +1,3 @@
-Cara menjalankan dashboard.py
-
-1. Pastikan Library streamlit sudah terinstal, jika belum jalankan perintah ini pada terminal:
-   a. pip install streamlit
-   b.
-
-
 # Air Quality in Every Station in China Dashboard
 
 ## Cara Menjalankan dashboard.py Pada Streamlit
