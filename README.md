@@ -17,15 +17,16 @@ streamlit --version
 ## Instalasi Library Yang Terdaftar Pada file `requirement.txt`
 
 ```
-mkdir proyek_analisis_data
-cd proyek_analisis_data
-pipenv install
-pipenv shell
-pip install -r requirements.txt
+pip install matplotlib.pyplot
+pip install numpy
+pip install pandas
+pip install seaborn
+pip install plotly
+pip install ipython
 ```
 
 ## Run steamlit app
 
 ```
-streamlit run dashboard.py
+streamlit run dashboard\dashboard.py
 ```
