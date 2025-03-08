@@ -14,7 +14,7 @@ pip install streamlit
 streamlit --version
 ```
 
-## Instalasi Library Yang Terdaftar Pada file `requirement.txt`
+## Instalasi Library Yang Terdaftar Pada file `requirements.txt`
 
 ```
 pip install -r requirements.txt
