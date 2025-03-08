@@ -14,7 +14,15 @@ df_all["quarter"] = df_all["datetime"].dt.to_period("Q")
 
 st.sidebar.title("Dashboard Kualitas Udara")
 pollutants = ["PM2.5", "PM10", "SO2", "NO2", "CO", "O3"]
-selected_pollutant = st.sidebar.selectbox("Pilih Polutan", pollutants)
+
+selected_pollutant_geo = st.sidebar.selectbox(
+    "Pilih Polutan (Geospasial)", pollutants, key="geo"
+)
+
+selected_pollutant_rain = st.sidebar.selectbox(
+    "Pilih Polutan (Rain)", pollutants, key="rain"
+)
+
 st.title("Distribusi Persebaran Polutan dari Berbagai Stasiun di China")
 
 st.subheader("Statistik Data Kualitas Udara")
@@ -66,17 +74,16 @@ df_all["Longitude"] = df_all["Station"].map(lambda x: station_coordinates.get(x,
 geo_data = df_all.groupby("Station", as_index=False).agg({
     "Latitude": "first",
     "Longitude": "first",
-    selected_pollutant: "mean"
+    selected_pollutant_geo: "mean"
 })
 
 fig = px.scatter_mapbox(
     geo_data, lat="Latitude", lon="Longitude",
-    hover_name="Station", color=selected_pollutant,
-    size=selected_pollutant, zoom=9, mapbox_style="carto-positron",
+    hover_name="Station", color=selected_pollutant_geo,
+    size=selected_pollutant_geo, zoom=9, mapbox_style="carto-positron",
     color_continuous_scale="Viridis"
 )
 st.plotly_chart(fig)
-
 
 #Permasalahan 2: Pola konsentrasi polutan berdasarkan waktu menggunakan analisis clustering
 st.title("Heatmap Konsentrasi PM2.5 per Kuartal")
@@ -121,14 +128,21 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-# Permasalahan 3: Penerapan teknik RFM (Recency, Frequency, Monetary) dalam analisis kualitas udara
-def create_rfm_airquality(df):
-    latest_date = df["datetime"].max()
-    recency = df.groupby("Station")["datetime"].max().apply(lambda x: (latest_date - x).days)
-    frequency = df.groupby("Station")["datetime"].count()
-    monetary = df.groupby("Station")["PM2.5"].mean()
-    return pd.DataFrame({"Recency": recency, "Frequency": frequency, "Monetary [PM2.5]": monetary})
+# Permasalahan 3: Pengaruh curah hujan terhadap polusi udara
+st.title("Pengaruh Curah Hujan terhadap Polusi Udara")
 
-rfm_df = create_rfm_airquality(df_all)
-st.title("Analisis RFM Kualitas Udara")
-st.dataframe(rfm_df.style.background_gradient(cmap="coolwarm"))
+df_all["datetime"] = pd.to_datetime(df_all[["year", "month", "day", "hour"]])
+df_all["quarter"] = df_all["datetime"].dt.to_period("Q").astype(str)
+df_all["Cluster"] = df_all["RAIN"].map(lambda x: "Tidak Hujan" if x == 0 else "Hujan")
+
+df_clustered = df_all.groupby(["quarter", "Cluster"])[pollutants].mean().reset_index()
+df_clustered[selected_pollutant_rain] = pd.to_numeric(df_clustered[selected_pollutant_rain], errors="coerce").fillna(0)
+
+fig, ax = plt.subplots(figsize=(8, 5))
+sns.lineplot(data=df_clustered, x="quarter", y=selected_pollutant_rain, hue="Cluster", marker="o", ax=ax)
+plt.xticks(rotation=45)
+ax.set(title=f"Perbandingan {selected_pollutant_rain} Berdasarkan Curah Hujan", xlabel="Kuartal", ylabel=selected_pollutant_rain)
+ax.legend(title="Cluster")
+ax.grid(True, linestyle="--", alpha=0.5)
+
+st.pyplot(fig)
