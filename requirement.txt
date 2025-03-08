@@ -1,0 +1,13 @@
+Library:
+1. matplotlib.pyplot
+    cara instalasi: pip install matplotlib.pyplot
+2. numpy
+    cara instalasi: pip install numpy
+3. pandas
+    cara instalasi: pip install pandas
+4. seaborn
+    cara instalasi: pip install seaborn
+5. plotly
+    cara instalasi: pip install plotly
+6. IPython.display
+    cara instalasi: pip install ipython
